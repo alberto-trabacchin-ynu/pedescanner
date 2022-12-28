@@ -1,0 +1,1 @@
+import pedescanner.jari_mng
