@@ -17,9 +17,12 @@ def get_init_time_format(record_name: str):
 
 def read_vehicle_data(record_name: str, sel_fields=None) -> pd.DataFrame:
     field_names = ["time", "x_vel", "x_accel", "brake_light", "yaw_vel",
-                  "y_accel", "steering_ang", "accel_pedal", "brake_pedal"]
+                   "y_accel", "steering_ang", "accel_pedal", "brake_pedal"]
     df = pd.read_csv(get_full_path(record_name), header=None, skiprows=2, 
                      names=field_names, usecols=sel_fields, encoding="cp932")
+    init_time = get_init_time_format(record_name)
+    start_idx = df.index[df["time"] == init_time].to_list()[0]
+    df = df.tail(-start_idx)
     df = df.replace(r"^\s*$", np.nan, regex=True)
     df.dropna(inplace=True)
     return df
